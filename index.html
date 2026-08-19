@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Vertical Jump: Retro Ascent</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="arcade-cabinet">
+    <!-- Top Cabinet Bezel -->
+    <header class="cabinet-header">
+      <div class="title-marquee">★ RETRO VERTICAL JUMP ★</div>
+    </header>
+
+    <div class="game-container">
+      <!-- Top In-Game HUD -->
+      <header id="game-hud" class="hud">
+        <div class="hud-left">
+          <div class="hud-item">
+            <span class="hud-label">SCORE</span>
+            <span id="score-display" class="hud-value">0</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label">BIOME</span>
+            <span id="biome-badge" class="hud-badge">MINE</span>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="hud-item">
+            <span class="hud-label">BEST</span>
+            <span id="high-score-display" class="hud-value">0</span>
+          </div>
+          <div class="hud-actions">
+            <button id="sound-btn" class="hud-btn" title="Toggle Sound" aria-label="Toggle Sound">🔊</button>
+            <button id="pause-btn" class="hud-btn" title="Pause Game" aria-label="Pause">⏸</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Canvas Wrapper -->
+      <div class="canvas-wrapper">
+        <canvas id="game-canvas" width="400" height="600"></canvas>
+
+        <!-- Notification Toast (In-Game Unlocks & Milestones) -->
+        <div id="toast-container" class="toast-container">
+          <div id="toast-banner" class="toast-banner hidden">
+            <span id="toast-icon">★</span>
+            <span id="toast-text">UNLOCKED: RETRO CAP!</span>
+          </div>
+        </div>
+
+        <!-- 1. MAIN TITLE MENU SCREEN -->
+        <div id="menu-overlay" class="overlay active">
+          <div class="overlay-card menu-card">
+            <div class="pixel-title-box">
+              <h1 class="game-title">VERTICAL<br><span class="highlight">JUMP</span></h1>
+              <p class="subtitle">ASCENT TO THE MOON</p>
+            </div>
+
+            <!-- Live Character Preview Mirror on Menu -->
+            <div class="avatar-mirror">
+              <div class="avatar-box">
+                <canvas id="menu-avatar-canvas" width="60" height="60"></canvas>
+              </div>
+              <span id="menu-equipped-label" class="equipped-label">HAT: NONE</span>
+            </div>
+
+            <div class="menu-actions">
+              <button id="btn-play" class="pixel-btn primary-btn">▶ PLAY GAME</button>
+              <button id="btn-wardrobe" class="pixel-btn">🎩 HATS & WARDROBE</button>
+              <button id="btn-stats" class="pixel-btn">🏆 STATS</button>
+            </div>
+
+            <div class="biome-route-preview">
+              <span>MINE ➜ FOREST ➜ SKY ➜ MOON ➜ COSMOS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. WARDROBE / HATS SCREEN -->
+        <div id="wardrobe-overlay" class="overlay">
+          <div class="overlay-card wardrobe-card">
+            <div class="wardrobe-header">
+              <h2>HAT WARDROBE</h2>
+              <span id="wardrobe-counter" class="sub-badge">UNLOCKED: 10/10</span>
+            </div>
+
+            <!-- Wardrobe Live Preview Box -->
+            <div class="wardrobe-preview-panel">
+              <div class="avatar-box large">
+                <canvas id="wardrobe-avatar-canvas" width="72" height="72"></canvas>
+              </div>
+              <div class="wardrobe-hat-info">
+                <h3 id="wardrobe-preview-title">CLASSIC CAP</h3>
+                <p id="wardrobe-preview-desc">A classic 8-bit cap with speed dash trail.</p>
+                <button id="btn-equip-selected" class="pixel-btn mini-btn">EQUIPPED</button>
+              </div>
+            </div>
+
+            <!-- Scrollable Grid of 10 Collectible Hats -->
+            <div class="hats-grid" id="hats-grid-container">
+              <!-- Dynamically populated in game.js -->
+            </div>
+
+            <div class="wardrobe-footer">
+              <button id="btn-wardrobe-back" class="pixel-btn">◀ BACK TO MENU</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. STATS SCREEN -->
+        <div id="stats-overlay" class="overlay">
+          <div class="overlay-card stats-card">
+            <h2>PLAYER STATS</h2>
+            <div class="stats-list">
+              <div class="stat-entry">
+                <span>HIGHEST SCORE:</span>
+                <span id="stat-high-score">0</span>
+              </div>
+              <div class="stat-entry">
+                <span>HIGHEST BIOME:</span>
+                <span id="stat-high-biome">MINE</span>
+              </div>
+              <div class="stat-entry">
+                <span>BOXES OPENED:</span>
+                <span id="stat-boxes-opened">0</span>
+              </div>
+              <div class="stat-entry">
+                <span>HATS COLLECTED:</span>
+                <span id="stat-hats-count">0 / 10</span>
+              </div>
+              <div class="stat-entry">
+                <span>TOTAL JUMPS:</span>
+                <span id="stat-total-jumps">0</span>
+              </div>
+            </div>
+            <div class="stats-actions">
+              <button id="btn-stats-back" class="pixel-btn">◀ BACK TO MENU</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PAUSE OVERLAY -->
+        <div id="pause-overlay" class="overlay">
+          <div class="overlay-card pause-card">
+            <h2>PAUSED</h2>
+            <div class="pause-actions">
+              <button id="btn-resume" class="pixel-btn primary-btn">RESUME</button>
+              <button id="btn-pause-menu" class="pixel-btn">MAIN MENU</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. GAME OVER OVERLAY -->
+        <div id="game-over-overlay" class="overlay">
+          <div class="overlay-card gameover-card">
+            <h2 class="gameover-title">GAME OVER</h2>
+            <div class="stats-box">
+              <div class="stat-row">
+                <span>FINAL SCORE:</span>
+                <span id="final-score">0</span>
+              </div>
+              <div class="stat-row">
+                <span>ALTITUDE REACHED:</span>
+                <span id="final-altitude">0m</span>
+              </div>
+              <div class="stat-row">
+                <span>BIOME:</span>
+                <span id="final-biome">MINE</span>
+              </div>
+              <div class="stat-row">
+                <span>BEST SCORE:</span>
+                <span id="final-best">0</span>
+              </div>
+            </div>
+            <div class="gameover-actions">
+              <button id="btn-restart" class="pixel-btn primary-btn">PLAY AGAIN</button>
+              <button id="btn-gameover-menu" class="pixel-btn">MAIN MENU</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile / Touch Controls -->
+        <div class="touch-controls" id="touch-controls">
+          <button id="touch-left" class="touch-btn" aria-label="Move Left">◀</button>
+          <button id="touch-right" class="touch-btn" aria-label="Move Right">▶</button>
+        </div>
+      </div>
+
+      <!-- Footer Instructions -->
+      <footer class="game-footer">
+        <span>← / → to Move | Collect [?] Boxes to Unlock Hats</span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
