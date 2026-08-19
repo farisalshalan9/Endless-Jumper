@@ -14,10 +14,13 @@
   --btn-border-light: #44444a;
   --btn-border-dark: #141416;
   
+<<<<<<< Updated upstream
   --tag-equipped: #e6e6e6;
   --tag-unlocked: #888888;
   --tag-locked: #333336;
 
+=======
+>>>>>>> Stashed changes
   --font-retro: 'Press Start 2P', monospace, monospace;
 }
 
@@ -163,11 +166,16 @@ canvas {
   width: 100%;
   height: 100%;
   background-color: rgba(18, 18, 20, 0.94);
+<<<<<<< Updated upstream
   display: flex;
+=======
+  display: none; /* Hidden by default */
+>>>>>>> Stashed changes
   justify-content: center;
   align-items: center;
   z-index: 20;
   padding: 16px;
+<<<<<<< Updated upstream
   transition: opacity 0.15s ease;
 }
 
@@ -180,6 +188,12 @@ canvas {
 .overlay.active {
   display: flex;
   opacity: 1;
+=======
+}
+
+.overlay.active {
+  display: flex !important; /* Visible when active */
+>>>>>>> Stashed changes
 }
 
 .overlay-card {
@@ -482,7 +496,11 @@ canvas {
 }
 
 .toast-banner.hidden {
+<<<<<<< Updated upstream
   display: none;
+=======
+  display: none !important;
+>>>>>>> Stashed changes
 }
 
 @keyframes toastBounce {
